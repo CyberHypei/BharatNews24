@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Role extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['name', 'slug', 'description', 'status'];
+
+    protected function casts(): array
+    {
+        return [];
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'role_user')->withTimestamps();
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'permission_role')->withTimestamps();
+    }
+
+    public function hasPermission(string $slug): bool
+    {
+        return $this->permissions()->where('slug', $slug)->where('status', 'active')->exists();
+    }
+}
