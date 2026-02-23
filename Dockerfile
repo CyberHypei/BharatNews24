@@ -13,9 +13,13 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-install pdo_mysql mysqli pdo zip
 
-# Composer
+# Copy app FIRST (artisan available)
+COPY . /var/www/html
+WORKDIR /var/www/html
+
+# Composer LAST (post-autoload works)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY composer.* ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-WORKDIR /var/www/html
+# PHP-FPM
+EXPOSE 9000  
