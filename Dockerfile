@@ -1,47 +1,21 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
-# Install dependencies
+# System deps for MySQL
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    gnupg2 \
+    unixodbc-dev \
+    libmariadb-dev-compat \
     libzip-dev \
-    zip \
-    unzip \
-    nginx \
-    supervisor
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+# MySQL PDO + extensions (KEY FIX)
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
+    && docker-php-ext-install pdo_mysql mysqli pdo zip
 
-# Install composer
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY composer.* ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy project
 WORKDIR /var/www/html
-COPY . .
-
-# Copy env example
-COPY .env.example .env
-
-# Install dependencies
-RUN composer install --optimize-autoloader --no-dev
-
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Nginx config
-COPY docker/nginx/default.conf /etc/nginx/sites-available/default
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Supervisor config
-COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Expose port
-EXPOSE 80
-
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

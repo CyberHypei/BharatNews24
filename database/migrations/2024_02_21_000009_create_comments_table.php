@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('no action');
             $table->text('comment');
             $table->enum('status', ['approved', 'pending'])->default('pending');
             $table->timestamps();
