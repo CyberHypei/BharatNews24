@@ -38,10 +38,16 @@
                     <h6 class="card-title">Publish</h6>
                     <div class="mb-2">
                         <label class="form-label">Status</label>
+                        @if(auth()->user()->hasPermission('publish-post'))
                         <select name="status" class="form-select">
                             <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
                             <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
                         </select>
+                        @else
+                        <input type="text" class="form-control bg-light" value="Draft" readonly>
+                        <input type="hidden" name="status" value="draft">
+                        <small class="text-muted">You do not have permission to publish. Post will be saved as draft.</small>
+                        @endif
                     </div>
                     <div class="form-check mb-2">
                         <input type="checkbox" name="is_featured" value="1" class="form-check-input" id="feat" {{ old('is_featured') ? 'checked' : '' }}>

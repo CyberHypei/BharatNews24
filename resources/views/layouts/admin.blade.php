@@ -31,14 +31,28 @@
                 <!-- <span class="fs-6 fw-semibold">{{ config('app.name') }} Admin</span> -->
             </a>
             <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid me-2"></i> Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.posts.index') }}"><i class="bi bi-newspaper me-2"></i> Posts</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.categories.index') }}"><i class="bi bi-folder me-2"></i> Categories</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.comments.index') }}"><i class="bi bi-chat-dots me-2"></i> Comments</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid me-2"></i> Dashboard</a></li>
+                @if(auth()->user()->hasAnyPermission(['create-post', 'edit-post', 'delete-post', 'publish-post']))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.posts*') ? 'active' : '' }}" href="{{ route('admin.posts.index') }}"><i class="bi bi-newspaper me-2"></i> Posts</a></li>
+                @endif
+                @if(auth()->user()->hasAnyPermission(['create-category', 'edit-category', 'delete-category']))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}"><i class="bi bi-folder me-2"></i> Categories</a></li>
+                @endif
+                @if(auth()->user()->hasPermission('manage-comments'))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.comments*') ? 'active' : '' }}" href="{{ route('admin.comments.index') }}"><i class="bi bi-chat-dots me-2"></i> Comments</a></li>
+                @endif
+                @if(auth()->user()->hasPermission('manage-contacts'))
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}" href="{{ route('admin.contacts.index') }}"><i class="bi bi-envelope me-2"></i> Contacts</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.users.index') }}"><i class="bi bi-people me-2"></i> Users</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.roles.index') }}"><i class="bi bi-shield me-2"></i> Roles</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('admin.permissions.index') }}"><i class="bi bi-key me-2"></i> Permissions</a></li>
+                @endif
+                @if(auth()->user()->hasPermission('manage-users'))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-people me-2"></i> Users</a></li>
+                @endif
+                @if(auth()->user()->hasPermission('manage-roles'))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}"><i class="bi bi-shield me-2"></i> Roles</a></li>
+                @endif
+                @if(auth()->user()->hasPermission('manage-permissions'))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.permissions*') ? 'active' : '' }}" href="{{ route('admin.permissions.index') }}"><i class="bi bi-key me-2"></i> Permissions</a></li>
+                @endif
                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}" target="_blank"><i class="bi bi-box-arrow-up-right me-2"></i> View Site</a></li>
                 <li class="nav-item mt-3">
                     <form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="nav-link border-0 bg-transparent text-start w-100"><i class="bi bi-box-arrow-right me-2"></i> Logout</button></form>

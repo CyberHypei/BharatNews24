@@ -5,7 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Post Management</h1>
+    @if(auth()->user()->hasPermission('create-post'))
     <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Create Post</a>
+    @endif
 </div>
 <form class="row g-2 mb-3" method="GET">
     <div class="col-auto">
@@ -40,8 +42,12 @@
                     <td>{{ $post->created_at->format('M d, Y') }}</td>
                     <td>
                         <a href="{{ route('post.show', $post->slug) }}" class="btn btn-sm btn-outline-secondary" target="_blank">View</a>
+                        @if(auth()->user()->hasPermission('edit-post'))
                         <a href="{{ route('admin.posts.edit', $post) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        @endif
+                        @if(auth()->user()->hasPermission('delete-post'))
                         <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this post?');">@csrf @method('DELETE')<button type="submit" class="btn btn-sm btn-outline-danger">Delete</button></form>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

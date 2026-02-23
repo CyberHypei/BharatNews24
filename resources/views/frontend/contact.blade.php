@@ -54,8 +54,8 @@
                         <h5>Address</h5>
                         <p class="mb-0">
                             {{ config('app.name') }}<br>
-                            123, Press Complex<br>
-                            New Delhi - 110001<br>
+                            194, Paratap Nagar, Sanganer<br>
+                            Jaipur - 302031<br>
                             India
                         </p>
                     </div>
@@ -80,9 +80,9 @@
                         <i class="fas fa-envelope fa-3x text-info mb-3"></i>
                         <h5>Email</h5>
                         <p class="mb-0">
-                            General: <strong>info@example.com</strong><br>
-                            Editorial: <strong>editor@example.com</strong><br>
-                            Support: <strong>support@example.com</strong>
+                            General: <strong>info@bharatnews24hours.com</strong><br>
+                            Editorial: <strong>editor@bharatnews24hours.com</strong><br>
+                            Support: <strong>support@bharatnews24hours.com</strong>
                         </p>
                     </div>
                 </div>
@@ -271,8 +271,8 @@
                         <div class="text-center mb-4">
                             <i class="fas fa-clock fa-3x text-theme"></i>
                         </div>
-                        <div class="d-flex justify-content-between mb-2"><span><strong>Monday – Friday:</strong></span><span>9:00 AM – 8:00 PM</span></div>
-                        <div class="d-flex justify-content-between mb-2"><span><strong>Saturday:</strong></span><span>10:00 AM – 6:00 PM</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span><strong>Monday – Friday:</strong></span><span>11:00 AM – 8:00 PM</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span><strong>Saturday:</strong></span><span>11:00 AM – 5:00 PM</span></div>
                         <div class="d-flex justify-content-between mb-2"><span><strong>Sunday:</strong></span><span>11:00 AM – 5:00 PM</span></div>
                         <hr>
                         <div class="d-flex justify-content-between"><span><strong>Newsroom (24x7):</strong></span><span class="text-success">Always open</span></div>

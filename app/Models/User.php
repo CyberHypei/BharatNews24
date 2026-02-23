@@ -65,6 +65,20 @@ class User extends Authenticatable
         return false;
     }
 
+    /** Check if user has any of the given permission slugs. */
+    public function hasAnyPermission(array $slugs): bool
+    {
+        if (empty($slugs)) {
+            return true;
+        }
+        foreach ($slugs as $slug) {
+            if ($this->hasPermission($slug)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');

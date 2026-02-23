@@ -27,7 +27,7 @@
                 <h1 class="slide-in-left">{{ config('app.name') }} – Your Trusted News Source</h1>
                 <p class="slide-in-left">Get the fastest, most accurate and unbiased news</p>
                 <div class="mt-4 slide-in-left">
-                    <a href="#latest-news" class="btn btn-light btn-lg me-3 latest-news-btn"><i class="fas fa-newspaper me-2"></i>Latest News</a>
+                    <a href="{{ route('post.anonymous.create') }}" class="btn btn-light btn-lg me-3 latest-news-btn"><i class="fas fa-paper-plane me-2"></i>Post News</a>
                     <a href="#featured" class="btn btn-outline-light btn-lg featured-btn"><i class="fas fa-star me-2"></i>Featured News</a>
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                <div class="sidebar-widget">
+                <div class="sidebar-widget d-none">
                     <div class="widget-header"><h5><i class="fas fa-envelope me-2"></i>Newsletter</h5></div>
                     <div class="widget-content">
                         <p>Get the latest news delivered to your inbox.</p>

@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('meta')
     <title>@yield('title', 'Home') - {{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('images/bharat-news-logo_uuid_26a06428-8751-4ef9-b723-382a686195f4.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -42,7 +43,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('category.show', $cat->slug) }}">{{ $cat->name }}</a></li>
                     @endforeach
                     @endif
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('contact*') ? 'active' : '' }}" href="{{ route('contact.index') }}">Contact</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link {{ request()->routeIs('contact*') ? 'active' : '' }}" href="{{ route('contact.index') }}">Contact</a></li> -->
                 </ul>
                 <form action="{{ route('search') }}" method="GET" class="d-flex me-3 search-form">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search news..." value="{{ request('q') }}" aria-label="Search">
@@ -57,7 +58,7 @@
                 @else
                 <!-- <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">Login</a> -->
                 @endauth
-                <button class="btn btn-outline-secondary ms-2 d-none d-lg-block" onclick="toggleDarkMode()" title="Dark mode"><i class="fas fa-moon"></i></button>
+                <!-- <button class="btn btn-outline-secondary ms-2 d-none d-lg-block" onclick="toggleDarkMode()" title="Dark mode"><i class="fas fa-moon"></i></button> -->
             </div>
         </div>
     </nav>

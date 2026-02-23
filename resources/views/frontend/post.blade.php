@@ -160,19 +160,27 @@
                     <div class="widget-header"><h5><i class="fas fa-chart-line me-2"></i>Most read</h5></div>
                     <div class="widget-content">
                         <ol class="list-unstyled">
-                            @foreach($relatedPosts->take(3) as $r)
-                            <li class="mb-3">
-                                <a href="{{ route('post.show', $r->slug) }}" class="text-decoration-none text-dark">
-                                    <h6>{{ Str::limit($r->title, 50) }}</h6>
-                                    <small class="text-muted">{{ number_format($r->views) }} views</small>
-                                </a>
-                            </li>
-                            @endforeach
+                            @if($relatedPosts->isNotEmpty())
+                                @foreach($relatedPosts->take(3) as $r)
+                                    <li class="mb-3">
+                                        <a href="{{ route('post.show', $r->slug) }}" class="text-decoration-none text-dark">
+                                            <h6>{{ Str::limit($r->title, 50) }}</h6>
+                                            <small class="text-muted">{{ number_format($r->views) }} views</small>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li class="mb-3">
+                                    <a href="{{ route('home') }}" class="text-decoration-none text-dark">
+                                        <h6>No related news found</h6>
+                                    </a>
+                                </li>
+                            @endif
                         </ol>
                     </div>
                 </div>
 
-                <div class="sidebar-widget">
+                <div class="sidebar-widget d-none">
                     <div class="widget-header"><h5><i class="fas fa-envelope me-2"></i>Newsletter</h5></div>
                     <div class="widget-content">
                         <p>Get the latest news in your inbox.</p>

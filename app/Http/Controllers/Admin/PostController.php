@@ -14,13 +14,20 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $query = Post::with(['category', 'user']);
+
+        if (!$user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
+
         $posts = $query->latest()->paginate(15)->withQueryString();
         return view('admin.posts.index', compact('posts'));
     }
@@ -51,10 +58,17 @@ class PostController extends Controller
             'meta_keywords' => ['nullable', 'string'],
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title'], '-', null);
+        if ($validated['slug'] === '') {
+            $validated['slug'] = Str::lower(Str::random(12));
+        }
         $validated['user_id'] = $request->user()->id;
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_anonymous'] = $request->boolean('is_anonymous');
+
+        if (!$request->user()->hasPermission('publish-post')) {
+            $validated['status'] = 'draft';
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadFile($request->file('image'), 'posts');
@@ -88,13 +102,15 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        $this->authorizePostAccess($post);
         $post->load('postImages');
         $categories = Category::where('status', 'active')->orderBy('name')->get();
         return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, Post $post)
-    {   
+    {
+        $this->authorizePostAccess($post);
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug,' . $post->id],
@@ -113,9 +129,17 @@ class PostController extends Controller
             'meta_keywords' => ['nullable', 'string'],
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title'], '-', null);
+        if ($validated['slug'] === '') {
+            $validated['slug'] = Str::lower(Str::random(12));
+        }
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_anonymous'] = $request->boolean('is_anonymous');
+
+        if (!$request->user()->hasPermission('publish-post')) {
+            $validated['status'] = $post->status;
+            $validated['published_at'] = $post->published_at;
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadFile($request->file('image'), 'posts');
@@ -151,17 +175,36 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        $this->authorizePostAccess($post);
+        if (!request()->user()->hasPermission('delete-post')) {
+            abort(403, 'You do not have permission to delete posts.');
+        }
         $post->delete();
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');
     }
 
     public function deletePostImage(PostImage $postImage)
     {
+        $this->authorizePostAccess($postImage->post);
         $postImage->delete();
         if (request()->wantsJson() || request()->ajax()) {
             return response()->json(['success' => true, 'message' => 'Image removed.']);
         }
         return back()->with('success', 'Image removed.');
+    }
+
+    /**
+     * Ensure current user can access this post: admin sees all, others only their own.
+     */
+    private function authorizePostAccess(Post $post): void
+    {
+        $user = request()->user();
+        if ($user->isAdmin()) {
+            return;
+        }
+        if ($post->user_id !== $user->id) {
+            abort(403, 'You can only manage your own posts.');
+        }
     }
 
     private function uploadFile($file, string $folder): string
