@@ -30,4 +30,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Fix permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+RUN php artisan migrate
+#RUN php artisan key:generate --force
+
 EXPOSE 10000
