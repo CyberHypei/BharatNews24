@@ -27,10 +27,11 @@ WORKDIR /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]
+#CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
 # Fix permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
-
-RUN php artisan migrate
-#RUN php artisan key:generate --force
 
 EXPOSE 10000
